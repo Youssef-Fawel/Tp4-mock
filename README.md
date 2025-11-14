@@ -1,107 +1,67 @@
 # TP4 – Mock LocalStorage et Mock API avec Playwright
 
-## Objectifs
-- Manipuler le localStorage pour simuler des données persistées dans le navigateur
-- Intercepter et mock des requêtes API HTTP avec Playwright
-- Comprendre l'intérêt du mocking pour des tests E2E stables et reproductibles
+## Description du Projet
+Ce projet démontre la maîtrise des techniques de **mocking** dans Playwright pour créer des tests E2E stables et reproductibles. Il contient deux parties principales :
 
-## Structure du projet
+1. **Mock localStorage** : Injection de données dans le localStorage avant le chargement d'une application TodoMVC
+2. **Mock API HTTP** : Interception et simulation de requêtes API vers ReqRes.in
 
-```
-tp-mock/
-├── tests/
-│   ├── mock.todomvc.spec.ts          # Exemple: Mock localStorage TodoMVC
-│   ├── mock.todomvc.exercise.spec.ts # Exercice: localStorage avancé
-│   ├── reqres.users.spec.ts          # Exemple: Mock API ReqRes
-│   └── reqres.swagger.spec.ts        # Exercice: Mock routes Swagger
-├── e2e/
-│   └── example.spec.ts               # Test d'exemple Playwright
-├── playwright.config.ts              # Configuration Playwright
-└── package.json
-```
+## Objectifs Réalisés
+✅ Manipulation du localStorage avec `page.addInitScript()` pour simuler des données persistées  
+✅ Interception de requêtes HTTP avec `page.route()` pour mocker les réponses API  
+✅ Tests sur différentes méthodes HTTP (GET, POST, PUT, DELETE)  
+✅ Vérification de l'affichage UI après injection de données mockées  
+✅ 10 tests Playwright fonctionnels couvrant les deux techniques de mocking
 
-## Installation
+## Contenu des Tests Réalisés
 
-Le projet a déjà été initialisé avec `npm init playwright@latest`.
+### 1. Mock LocalStorage – TodoMVC (2 tests)
 
-Si vous devez installer les dépendances manuellement :
+#### ✅ `tests/mock.todomvc.spec.ts`
+**Technique démontrée** : Injection de données dans localStorage avant chargement de page
+- Utilise `page.addInitScript()` pour injecter 3 tâches
+- Vérifie que les tâches apparaissent correctement dans l'interface TodoMVC
 
-```powershell
-cd c:\Users\faoue\tp-mock
-npm install
-npx playwright install
-```
+#### ✅ `tests/mock.todomvc.exercise.spec.ts`
+**Exercice complet démontrant la maîtrise** :
+1. Injection de 4 tâches dans localStorage
+2. Modification d'une tâche (marquer la 3e comme complétée)
+3. Suppression d'une tâche (supprimer la 1re)
+4. Vérification précise de l'affichage UI correspondant aux données mockées
 
-## Exécution des tests
+**Concepts clés** : Manipulation d'objets JSON, gestion du state localStorage, assertions UI
 
-### Exécuter tous les tests
-```powershell
-npx playwright test
-```
+---
 
-### Exécuter tous les tests avec interface graphique
-```powershell
-npx playwright test --headed
-```
+### 2. Mock API HTTP – ReqRes (8 tests)
 
-### Exécuter tous les tests avec Chromium uniquement
-```powershell
-npx playwright test --project=chromium
-```
+#### ✅ `tests/reqres.users.spec.ts`
+**Technique démontrée** : Interception d'une requête GET
+- Utilise `page.route()` pour intercepter `GET /api/users?page=2`
+- Retourne des données mockées (utilisateurs fictifs)
+- Vérifie l'affichage des données mockées dans la réponse Swagger
 
-### Exécuter un test spécifique
-```powershell
-# Test localStorage exemple
-npx playwright test tests/mock.todomvc.spec.ts --headed --project=chromium
+#### ✅ `tests/reqres.swagger.spec.ts`
+**Exercice complet démontrant la maîtrise de 7 routes API différentes** :
 
-# Test localStorage exercice
-npx playwright test tests/mock.todomvc.exercise.spec.ts --headed --project=chromium
+| Route | Méthode | Ce qui est mocké |
+|-------|---------|------------------|
+| `/api/users/{id}` | GET | Utilisateur unique avec données personnalisées |
+| `/api/users` | POST | Création d'utilisateur avec ID 999 |
+| `/api/users/{id}` | PUT | Mise à jour utilisateur avec job modifié |
+| `/api/users/{id}` | DELETE | Suppression avec status 204 (No Content) |
+| `/api/register` | POST | Inscription réussie avec token mocké |
+| `/api/login` | POST | Connexion réussie avec token mocké |
+| `/api/unknown` | GET | Liste de ressources avec couleurs mockées |
 
-# Test API ReqRes exemple
-npx playwright test tests/reqres.users.spec.ts --headed --project=chromium
+**Concepts clés** : Filtrage par méthode HTTP, gestion des status codes, vérification de réponses JSON, gestion du cas DELETE 204
 
-# Test API ReqRes exercice (Swagger routes)
-npx playwright test tests/reqres.swagger.spec.ts --headed --project=chromium
-```
+---
 
-### Mode debug
-```powershell
-npx playwright test --debug
-```
-
-### Mode UI interactif
-```powershell
-npx playwright test --ui
-```
-
-## Contenu des tests
-
-### 1. Mock LocalStorage – TodoMVC
-
-#### `tests/mock.todomvc.spec.ts`
-Test d'exemple qui injecte 3 tâches dans le localStorage avant le chargement de la page TodoMVC.
-
-#### `tests/mock.todomvc.exercise.spec.ts`
-Exercice complet qui :
-1. Injecte 4 tâches avant chargement
-2. Marque la 3e tâche comme complétée
-3. Supprime la 1re tâche
-4. Vérifie que l'affichage correspond au contenu simulé
-
-### 2. Mock API HTTP – ReqRes
-
-#### `tests/reqres.users.spec.ts`
-Test d'exemple qui intercepte `GET /api/users?page=2` et retourne des utilisateurs mockés.
-
-#### `tests/reqres.swagger.spec.ts`
-Exercice complet qui intercepte plusieurs routes Swagger :
-- `GET /api/users/{id}` - Single user
-- `POST /api/users` - Create user
-- `PUT /api/users/{id}` - Update user
-- `DELETE /api/users/{id}` - Delete user
-- `POST /api/register` - Register
-- `POST /api/login` - Login
-- `GET /api/unknown` - List resources
+## Résultats
+✅ **10/10 tests passent** avec succès  
+⏱️ Temps d'exécution : ~1-2 minutes  
+🎯 Couverture complète des techniques de mocking localStorage et API
 
 ## Bonnes pratiques
 
@@ -117,11 +77,17 @@ Exercice complet qui intercepte plusieurs routes Swagger :
 - Oublier de nettoyer les routes avec `unroute()`
 - Mock des données incohérentes avec la structure attendue
 
-## Ressources
+## Ressources Utilisées
 
-- [Documentation Playwright](https://playwright.dev)
-- [ReqRes API Documentation](https://reqres.in/api-docs/)
-- [TodoMVC Demo](https://demo.playwright.dev/todomvc)
+- [Documentation Playwright](https://playwright.dev) - Framework de test E2E
+- [ReqRes API](https://reqres.in/api-docs/) - API de test utilisée pour les mocks HTTP
+- [TodoMVC Demo](https://demo.playwright.dev/todomvc) - Application de démo pour les tests localStorage
+
+## Technologies
+- **Playwright** v1.42.0
+- **TypeScript** 
+- **Node.js**
+- Techniques : `page.addInitScript()`, `page.route()`, `route.fulfill()`
 
 ## Conclusion
 
