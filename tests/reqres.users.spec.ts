@@ -3,24 +3,22 @@ import { test, expect } from '@playwright/test';
 test('mock de la liste des utilisateurs', async ({ page }) => {
 
     await page.route('**/api/users?page=2', async route => {
-        await page.route('**/api/users?page=2', async route => {
-            await route.fulfill({
-                status: 200,
-                contentType: 'application/json',
-                body: JSON.stringify({
-                    data: [
-                        { id: 1, first_name: 'Jean', last_name: 'Dupont', email: 'jean.dupont@example.com' },
-                        { id: 2, first_name: 'Claire', last_name: 'Martin', email: 'claire.martin@example.com' }
-                    ]
-                })
-            });
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                data: [
+                    { id: 1, first_name: 'Lucas', last_name: 'Bernard', email: 'lucas.bernard@example.com' },
+                    { id: 2, first_name: 'Emma', last_name: 'Petit', email: 'emma.petit@example.com' }
+                ]
+            })
         });
     });
 
     await page.goto('https://reqres.in/');
     await page.click('text=List Users');
-    await expect(page.getByText('Jean')).toBeVisible();
-    await expect(page.getByText('Claire')).toBeVisible();
+    await expect(page.getByText('Lucas')).toBeVisible();
+    await expect(page.getByText('Emma')).toBeVisible();
     await page.pause();
     await page.unroute('**/api/users?page=2');
     await page.pause();
@@ -33,10 +31,9 @@ test('mock de création d\'utilisateur - POST /api/register', async ({ page }) =
                 status: 201,
                 contentType: 'application/json',
                 body: JSON.stringify({
-                    username: 'Jean Dupont',
-                    email: 'jean.dupont@example.com',
-                    password: '999'
-
+                    username: 'Thomas Dubois',
+                    email: 'thomas.dubois@example.com',
+                    password: '456'
                 })
             });
         } else {
@@ -76,9 +73,9 @@ test('mock de récupération d\'un utilisateur - GET /api/users/:id', async ({ p
             body: JSON.stringify({
                 data: {
                     id: 5,
-                    email: 'charles.morris@reqres.in',
-                    first_name: 'Charles',
-                    last_name: 'Morris',
+                    email: 'sophie.martin@reqres.in',
+                    first_name: 'Sophie',
+                    last_name: 'Martin',
                     avatar: 'https://reqres.in/img/faces/5-image.jpg'
                 },
                 support: {
@@ -123,9 +120,9 @@ test('exercice - interception multiple routes API ReqRes', async ({ page }) => {
                     total: 12,
                     total_pages: 2,
                     data: [
-                        { id: 1, email: 'george.bluth@reqres.in', first_name: 'George', last_name: 'Bluth' },
-                        { id: 2, email: 'janet.weaver@reqres.in', first_name: 'Janet', last_name: 'Weaver' },
-                        { id: 3, email: 'emma.wong@reqres.in', first_name: 'Emma', last_name: 'Wong' }
+                        { id: 1, email: 'maxime.roux@reqres.in', first_name: 'Maxime', last_name: 'Roux' },
+                        { id: 2, email: 'julie.blanc@reqres.in', first_name: 'Julie', last_name: 'Blanc' },
+                        { id: 3, email: 'pierre.moreau@reqres.in', first_name: 'Pierre', last_name: 'Moreau' }
                     ]
                 })
             });
@@ -139,8 +136,8 @@ test('exercice - interception multiple routes API ReqRes', async ({ page }) => {
                     total: 12,
                     total_pages: 2,
                     data: [
-                        { id: 7, email: 'michael.lawson@reqres.in', first_name: 'Michael', last_name: 'Lawson' },
-                        { id: 8, email: 'lindsay.ferguson@reqres.in', first_name: 'Lindsay', last_name: 'Ferguson' }
+                        { id: 7, email: 'nicolas.simon@reqres.in', first_name: 'Nicolas', last_name: 'Simon' },
+                        { id: 8, email: 'camille.laurent@reqres.in', first_name: 'Camille', last_name: 'Laurent' }
                     ]
                 })
             });
